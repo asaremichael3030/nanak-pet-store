@@ -1,0 +1,1273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Nanak Pet Store</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cream: #FAF6EF;
+    --warm: #F2E8D5;
+    --brown: #5C3D2E;
+    --dark: #2C1A0E;
+    --gold: #C8962A;
+    --green: #4A7C59;
+    --accent: #E07B39;
+    --text: #3A2A1A;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--text);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; width: 100%; z-index: 1000;
+    background: rgba(250,246,239,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(92,61,46,0.15);
+    padding: 0 5%;
+    display: flex; align-items: center; justify-content: space-between;
+    height: 72px;
+  }
+
+  .logo {
+    font-family: 'Playfair Display', serif;
+    background: none;
+    border: none;
+    font-size: 1.6rem;
+    font-weight: 900;
+    color: var(--brown);
+    letter-spacing: -0.5px;
+    cursor: pointer;
+  }
+  .logo span { color: var(--gold); }
+
+  nav ul { list-style: none; display: flex; gap: 2rem; }
+  nav ul li a {
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 500;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    cursor: pointer;
+  }
+  nav ul li a:hover, nav ul li a.active { color: var(--accent); }
+
+  .nav-cart {
+    position: relative;
+    cursor: pointer;
+    font-size: 1.5rem;
+    padding: 0.3rem;
+  }
+  .cart-count {
+    position: absolute;
+    top: -6px; right: -8px;
+    background: var(--accent);
+    color: white;
+    font-size: 0.65rem;
+    font-weight: 700;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    opacity: 0;
+    transform: scale(0);
+    transition: all 0.2s;
+  }
+  .cart-count.visible { opacity: 1; transform: scale(1); }
+
+  .page { display: none; min-height: 100vh; padding-top: 72px; }
+  .page.active { display: block; }
+
+  /* HOME */
+  #home { background: var(--cream); }
+
+  .hero {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: calc(100vh - 72px);
+    align-items: center;
+  }
+
+  .hero-text { padding: 6rem 5% 6rem 8%; animation: fadeUp 0.8s ease both; }
+
+  .hero-tag {
+    display: inline-block;
+    background: var(--gold);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(3rem, 5vw, 5rem);
+    font-weight: 900;
+    line-height: 1.05;
+    color: var(--dark);
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 em { font-style: italic; color: var(--accent); }
+
+  .hero p { font-size: 1.1rem; line-height: 1.7; color: #6B5040; max-width: 440px; margin-bottom: 2.5rem; }
+
+  .btn-group { display: flex; gap: 1rem; flex-wrap: wrap; }
+
+  .btn {
+    padding: 0.85rem 2rem;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s;
+    font-family: 'DM Sans', sans-serif;
+    letter-spacing: 0.3px;
+  }
+  .btn-primary { background: var(--brown); color: white; }
+  .btn-primary:hover { background: var(--dark); transform: translateY(-2px); }
+  .btn-outline { background: transparent; color: var(--brown); border: 2px solid var(--brown); }
+  .btn-outline:hover { background: var(--brown); color: white; transform: translateY(-2px); }
+
+  .hero-visual {
+    background: var(--warm);
+    height: 100%;
+    min-height: calc(100vh - 72px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-visual::before {
+    content: '';
+    position: absolute;
+    width: 500px; height: 500px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200,150,42,0.2), transparent 70%);
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+  }
+  .hero-visual img { width: 100%; height: 100%; object-fit: cover; position: relative; z-index: 1; }
+
+  .home-stats { display: grid; grid-template-columns: repeat(3, 1fr); background: var(--brown); padding: 3rem 8%; gap: 1px; }
+  .stat { text-align: center; padding: 2rem; }
+  .stat-num { font-family: 'Playfair Display', serif; font-size: 3rem; font-weight: 900; color: var(--gold); }
+  .stat-label { color: rgba(255,255,255,0.75); font-size: 0.9rem; margin-top: 0.4rem; }
+
+  .home-features { padding: 6rem 8%; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+
+  .feature-card {
+    background: white; border-radius: 20px; padding: 2.5rem;
+    box-shadow: 0 4px 20px rgba(92,61,46,0.08);
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .feature-card:hover { transform: translateY(-6px); box-shadow: 0 12px 40px rgba(92,61,46,0.15); }
+  .feature-icon { font-size: 2.5rem; margin-bottom: 1rem; }
+  .feature-card h3 { font-family: 'Playfair Display', serif; font-size: 1.3rem; color: var(--dark); margin-bottom: 0.75rem; }
+  .feature-card p { color: #7A6050; line-height: 1.6; font-size: 0.95rem; }
+
+  /* ABOUT */
+  #about { padding: 6rem 8%; }
+  .section-header { text-align: center; margin-bottom: 4rem; }
+  .section-tag { display: inline-block; color: var(--accent); font-size: 0.8rem; font-weight: 500; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 1rem; }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 3.5rem); font-weight: 900; color: var(--dark); line-height: 1.1; }
+  .section-header p { color: #6B5040; max-width: 600px; margin: 1rem auto 0; line-height: 1.7; }
+
+  .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5rem; align-items: center; margin-bottom: 5rem; }
+  .about-visual { border-radius: 30px; height: 450px; overflow: hidden; position: relative; }
+  .about-visual img { width: 100%; height: 100%; object-fit: cover; border-radius: 30px; }
+  .about-visual::after { content: ''; position: absolute; bottom: -20px; right: -20px; width: 150px; height: 150px; border-radius: 50%; background: var(--gold); opacity: 0.3; pointer-events: none; }
+  .about-content h3 { font-family: 'Playfair Display', serif; font-size: 2rem; color: var(--dark); margin-bottom: 1.5rem; }
+  .about-content p { color: #6B5040; line-height: 1.8; margin-bottom: 1.2rem; font-size: 0.95rem; }
+
+  .values-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+  .value-card { background: var(--warm); border-radius: 16px; padding: 2rem 1.5rem; text-align: center; }
+  .value-icon { font-size: 2rem; margin-bottom: 0.75rem; }
+  .value-card h4 { font-family: 'Playfair Display', serif; font-size: 1rem; color: var(--dark); margin-bottom: 0.5rem; }
+  .value-card p { font-size: 0.85rem; color: #7A6050; line-height: 1.5; }
+
+  /* SERVICES */
+  #services { padding: 6rem 8%; background: var(--warm); }
+  .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .service-card { background: white; border-radius: 24px; overflow: hidden; transition: transform 0.3s; }
+  .service-card:hover { transform: translateY(-8px); }
+  .service-info { padding: 1.75rem; }
+  .service-info h3 { font-family: 'Playfair Display', serif; font-size: 1.25rem; color: var(--dark); margin-bottom: 0.6rem; }
+  .service-info p { color: #7A6050; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1rem; }
+  .service-price { font-size: 1.1rem; font-weight: 600; color: var(--accent); }
+  .btn-book {
+    display: inline-block; margin-top: 0.8rem; padding: 0.5rem 1.2rem;
+    background: var(--brown); color: white; border: none; border-radius: 50px;
+    font-size: 0.82rem; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s;
+  }
+  .btn-book:hover { background: var(--accent); transform: translateY(-2px); }
+
+  /* TESTIMONIALS */
+  #testimonials { padding: 6rem 8%; }
+  .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+  .testimonial-card { background: white; border-radius: 20px; padding: 2.5rem; box-shadow: 0 4px 20px rgba(92,61,46,0.07); position: relative; }
+  .testimonial-card::before { content: '"'; font-family: 'Playfair Display', serif; font-size: 5rem; color: var(--warm); position: absolute; top: -0.5rem; left: 1.5rem; line-height: 1; }
+  .stars { color: var(--gold); font-size: 1rem; margin-bottom: 1rem; }
+  .testimonial-card p { color: #5A4030; line-height: 1.7; font-size: 0.95rem; margin-bottom: 1.5rem; position: relative; z-index: 1; }
+  .reviewer { display: flex; align-items: center; gap: 1rem; }
+  .avatar { width: 46px; height: 46px; border-radius: 50%; overflow: hidden; background: var(--warm); flex-shrink: 0; }
+  .avatar img { width: 100%; height: 100%; object-fit: cover; border-radius: 50%; }
+  .reviewer-info strong { display: block; color: var(--dark); font-size: 0.95rem; }
+  .reviewer-info span { font-size: 0.82rem; color: #9A8070; }
+  .featured-review { grid-column: 1/-1; background: var(--brown); color: white; padding: 3rem; border-radius: 24px; display: grid; grid-template-columns: 1fr auto; gap: 2rem; align-items: center; }
+  .featured-review p { font-size: 1.2rem; line-height: 1.7; color: rgba(255,255,255,0.9); font-family: 'Playfair Display', serif; font-style: italic; }
+  .featured-review .reviewer-info strong { color: var(--gold); }
+  .featured-review .reviewer-info span { color: rgba(255,255,255,0.6); }
+  .featured-review .avatar { background: rgba(255,255,255,0.15); }
+
+  /* SHOP */
+  #shop { padding: 6rem 8%; background: var(--warm); }
+  .shop-filter { display: flex; gap: 1rem; justify-content: center; margin-bottom: 3rem; flex-wrap: wrap; }
+  .filter-btn { padding: 0.6rem 1.5rem; border-radius: 50px; border: 2px solid var(--brown); background: transparent; color: var(--brown); font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; }
+  .filter-btn.active, .filter-btn:hover { background: var(--brown); color: white; }
+  .products-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.5rem; }
+  .product-card { background: white; border-radius: 20px; overflow: hidden; transition: transform 0.3s; }
+  .product-card:hover { transform: translateY(-5px); }
+  .product-img { height: 180px; display: flex; align-items: center; justify-content: center; background: var(--cream); overflow: hidden; }
+  .product-img img { width: 100%; height: 100%; object-fit: cover; }
+  .product-info { padding: 1.25rem; }
+  .product-category { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: var(--accent); font-weight: 500; }
+  .product-info h4 { font-family: 'Playfair Display', serif; color: var(--dark); margin: 0.3rem 0 0.5rem; font-size: 1rem; }
+  .product-bottom { display: flex; align-items: center; justify-content: space-between; }
+  .product-price { font-weight: 600; color: var(--brown); }
+  .add-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--brown); color: white; border: none; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .add-btn:hover { background: var(--accent); transform: scale(1.1); }
+  .add-btn.added { background: var(--green); }
+
+  /* CART SIDEBAR */
+  .cart-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.4); z-index: 2000; opacity: 0; pointer-events: none; transition: opacity 0.3s; }
+  .cart-overlay.open { opacity: 1; pointer-events: all; }
+  .cart-sidebar { position: fixed; top: 0; right: -420px; width: 420px; max-width: 100vw; height: 100vh; background: white; z-index: 2001; display: flex; flex-direction: column; box-shadow: -4px 0 30px rgba(0,0,0,0.15); transition: right 0.35s cubic-bezier(0.4,0,0.2,1); padding: 2rem; }
+  .cart-sidebar.open { right: 0; }
+  .cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; padding-bottom: 1rem; border-bottom: 1.5px solid var(--warm); }
+  .cart-header h2 { font-family: 'Playfair Display', serif; color: var(--dark); font-size: 1.5rem; }
+  .cart-close { background: var(--warm); border: none; border-radius: 50%; width: 36px; height: 36px; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: background 0.2s; }
+  .cart-close:hover { background: var(--accent); color: white; }
+  .cart-items { flex: 1; overflow-y: auto; }
+  .cart-item { display: flex; align-items: center; gap: 1rem; padding: 1rem 0; border-bottom: 1px solid var(--warm); animation: fadeUp 0.3s ease; }
+  .cart-item-img { width: 60px; height: 60px; border-radius: 12px; background: var(--cream); overflow: hidden; flex-shrink: 0; }
+  .cart-item-img img { width: 100%; height: 100%; object-fit: cover; }
+  .cart-item-info { flex: 1; }
+  .cart-item-info h4 { font-size: 0.9rem; color: var(--dark); font-weight: 500; }
+  .cart-item-info span { font-size: 0.85rem; color: var(--accent); font-weight: 600; }
+  .cart-item-qty { display: flex; align-items: center; gap: 0.5rem; }
+  .qty-btn { width: 26px; height: 26px; border-radius: 50%; border: 1.5px solid var(--brown); background: transparent; color: var(--brown); cursor: pointer; font-size: 0.9rem; display: flex; align-items: center; justify-content: center; transition: all 0.2s; }
+  .qty-btn:hover { background: var(--brown); color: white; }
+  .qty-num { font-size: 0.9rem; font-weight: 600; min-width: 20px; text-align: center; }
+  .cart-remove { background: none; border: none; cursor: pointer; color: #ccc; font-size: 1rem; transition: color 0.2s; }
+  .cart-remove:hover { color: #e74c3c; }
+  .cart-empty { text-align: center; padding: 3rem 1rem; color: #9A8070; }
+  .cart-empty .empty-icon { font-size: 3rem; margin-bottom: 1rem; }
+  .cart-footer { border-top: 2px solid var(--warm); padding-top: 1.5rem; margin-top: auto; }
+  .cart-total { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; font-size: 1.1rem; font-weight: 600; color: var(--dark); }
+  .btn-checkout { width: 100%; padding: 1rem; background: var(--brown); color: white; border: none; border-radius: 50px; font-size: 1rem; font-family: 'DM Sans', sans-serif; font-weight: 500; cursor: pointer; transition: all 0.25s; }
+  .btn-checkout:hover { background: var(--dark); transform: translateY(-2px); }
+
+  /* CONTACT */
+  #contact { padding: 6rem 8%; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1.5fr; gap: 5rem; align-items: start; }
+  .contact-info h3 { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: var(--dark); margin-bottom: 1.5rem; }
+  .contact-info p { color: #6B5040; line-height: 1.7; margin-bottom: 2rem; }
+  .contact-detail { display: flex; gap: 1rem; margin-bottom: 1.5rem; align-items: flex-start; }
+  .contact-icon { width: 44px; height: 44px; background: var(--warm); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+  .contact-detail strong { display: block; color: var(--dark); font-size: 0.9rem; }
+  .contact-detail span { color: #7A6050; font-size: 0.9rem; }
+  .contact-form { background: white; border-radius: 24px; padding: 3rem; box-shadow: 0 4px 30px rgba(92,61,46,0.08); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 1.2rem; margin-bottom: 1.2rem; }
+  .form-group { display: flex; flex-direction: column; margin-bottom: 1.2rem; }
+  .form-group label { font-size: 0.85rem; font-weight: 500; color: var(--dark); margin-bottom: 0.5rem; }
+  .form-group input, .form-group textarea, .form-group select { padding: 0.85rem 1rem; border: 1.5px solid #E0D4C4; border-radius: 12px; font-family: 'DM Sans', sans-serif; font-size: 0.95rem; color: var(--text); background: var(--cream); transition: border-color 0.2s; outline: none; }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus { border-color: var(--accent); }
+  .form-group input.error, .form-group textarea.error { border-color: #e74c3c; }
+  .form-group textarea { height: 120px; resize: vertical; }
+  .field-error { color: #e74c3c; font-size: 0.78rem; margin-top: 0.3rem; }
+  /* ============================================================
+       PET TYPE RADIO CHIPS
+    ============================================================ */
+    .chip-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin-bottom: 0.6rem;
+    }
+
+    .chip-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1.25rem;
+    }
+
+    .chip-group input[type="radio"] { display: none; }
+
+    .chip-group label {
+      padding: 0.42rem 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 50px;
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all var(--transition);
+      background: var(--cream);
+      user-select: none;
+    }
+    .chip-group label:hover {
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+    .chip-group input[type="radio"]:checked + label {
+      background: var(--brown);
+      border-color: var(--brown);
+      color: var(--white);
+    }
+
+  /* TOAST */
+  .toast-container { position: fixed; bottom: 2rem; right: 2rem; z-index: 9999; display: flex; flex-direction: column; gap: 0.75rem; }
+  .toast { background: var(--dark); color: white; padding: 0.9rem 1.5rem; border-radius: 50px; font-size: 0.9rem; box-shadow: 0 8px 30px rgba(0,0,0,0.2); display: flex; align-items: center; gap: 0.6rem; animation: toastIn 0.35s ease; max-width: 320px; }
+  .toast.success { background: var(--green); }
+  .toast.info { background: var(--brown); }
+  @keyframes toastIn { from { opacity: 0; transform: translateY(20px) scale(0.9); } to { opacity: 1; transform: translateY(0) scale(1); } }
+  @keyframes toastOut { to { opacity: 0; transform: translateY(20px) scale(0.9); } }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 3000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.3s; overflow-y: auto; padding: 1rem; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: white; border-radius: 24px; padding: 2.5rem; max-width: 500px; width: 90%; text-align: center; transform: scale(0.9); transition: transform 0.3s; box-shadow: 0 20px 60px rgba(0,0,0,0.2); max-height: 92vh; overflow-y: auto; }
+  .modal-overlay.open .modal { transform: scale(1); }
+  .modal-icon { font-size: 4rem; margin-bottom: 1rem; }
+  .modal h3 { font-family: 'Playfair Display', serif; font-size: 1.6rem; color: var(--dark); margin-bottom: 0.75rem; }
+  .modal p { color: #6B5040; line-height: 1.6; margin-bottom: 1.5rem; }
+  .modal-close { background: var(--brown); color: white; border: none; border-radius: 50px; padding: 0.75rem 2rem; font-size: 0.9rem; font-family: 'DM Sans', sans-serif; cursor: pointer; transition: all 0.2s; }
+  .modal-close:hover { background: var(--dark); }
+  .star-rating { display: flex; gap: 0.5rem; margin-bottom: 1rem; justify-content: center; }
+  .star-rating span { font-size: 1.8rem; cursor: pointer; color: #ddd; transition: color 0.15s; }
+  .star-rating span.active, .star-rating span:hover { color: var(--gold); }
+
+  /* FOOTER */
+  footer { background: var(--dark); color: rgba(255,255,255,0.7); padding: 3rem 8%; display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 3rem; }
+  .footer-brand .logo { color: white; font-size: 1.4rem; }
+  .footer-brand p { margin-top: 1rem; font-size: 0.88rem; line-height: 1.7; }
+  .footer-col h4 { color: white; font-family: 'Playfair Display', serif; margin-bottom: 1rem; font-size: 1rem; }
+  .footer-col ul { list-style: none; }
+  .footer-col ul li { margin-bottom: 0.6rem; }
+  .footer-col ul li a { color: rgba(255,255,255,0.6); text-decoration: none; font-size: 0.88rem; cursor: pointer; transition: color 0.2s; }
+  .footer-col ul li a:hover { color: var(--gold); }
+  .footer-bottom { background: var(--dark); text-align: center; padding: 1.2rem; border-top: 1px solid rgba(255,255,255,0.08); font-size: 0.82rem; color: rgba(255,255,255,0.4); }
+
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+  .animate { animation: fadeUp 0.7s ease both; }
+  .image { width: 100%; height: 210px; object-fit: cover; border-radius: 10px; transition: 0.5s ease; }
+
+  @media (max-width: 900px) {
+    .hero, .about-grid, .contact-grid { grid-template-columns: 1fr; }
+    .hero-visual { min-height: 40vh; }
+    .home-features, .services-grid, .testimonials-grid { grid-template-columns: 1fr 1fr; }
+    .products-grid { grid-template-columns: 1fr 1fr; }
+    .values-grid { grid-template-columns: 1fr 1fr; }
+    footer { grid-template-columns: 1fr 1fr; }
+    .featured-review { grid-template-columns: 1fr; }
+    nav ul { gap: 1rem; }
+    .cart-sidebar { width: 100%; right: -100%; }
+  }
+  @media (max-width: 600px) {
+    .home-features, .services-grid, .testimonials-grid, .products-grid { grid-template-columns: 1fr; }
+    .values-grid, .home-stats { grid-template-columns: 1fr; }
+    .form-row, footer { grid-template-columns: 1fr; }
+    nav ul { display: none; }
+    .hero-text { padding: 3rem 5%; }
+  }
+
+  /* MOBILE HAMBURGER */
+  .hamburger {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0.4rem;
+    border-radius: 8px;
+    transition: background 0.2s;
+  }
+  .hamburger:hover, .hamburger:focus { background: var(--warm); outline: none; }
+  .hamburger span {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background: var(--brown);
+    border-radius: 2px;
+    transition: all 0.3s;
+  }
+  .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+  .hamburger.open span:nth-child(2) { opacity: 0; }
+  .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+  .mobile-nav {
+    display: none;
+    position: fixed;
+    top: 72px;
+    left: 0;
+    width: 100%;
+    background: rgba(250,246,239,0.98);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(92,61,46,0.15);
+    z-index: 999;
+    flex-direction: column;
+    padding: 1rem 5%;
+    gap: 0;
+  }
+  .mobile-nav.open { display: flex; }
+  .mobile-nav a {
+    display: block;
+    padding: 0.85rem 0;
+    border-bottom: 1px solid rgba(92,61,46,0.08);
+    text-decoration: none;
+    color: var(--text);
+    font-weight: 500;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .mobile-nav a:last-child { border-bottom: none; }
+  .mobile-nav a:hover, .mobile-nav a.active { color: var(--accent); }
+  @media (max-width: 600px) {
+    .hamburger { display: flex; }
+    .nav-desktop { display: none !important; }
+  }
+  /* FOCUS STATES */
+  button:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .nav-cart:focus { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: 8px; }
+
+</style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-nav" style="position:absolute;top:-40px;left:0;background:var(--accent);color:white;padding:0.5rem 1rem;z-index:9999;border-radius:0 0 8px 0;transition:top 0.2s;text-decoration:none;font-weight:500;">Skip to main content</a>
+<style>.skip-nav:focus{top:0}</style>
+<div class="toast-container" id="toastContainer"></div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="handleModalOverlayClick(event)" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+  <div class="modal" id="modalContent" role="document"></div>
+</div>
+
+<div class="cart-overlay" id="cartOverlay" onclick="toggleCart()"></div>
+<div class="cart-sidebar" id="cartSidebar" role="dialog" aria-modal="true" aria-label="Shopping cart">
+  <div class="cart-header">
+    <h2>🛒 Your Cart</h2>
+    <button class="cart-close" onclick="toggleCart()" aria-label="Close shopping cart">✕</button>
+  </div>
+  <div class="cart-items" id="cartItems">
+    <div class="cart-empty"><div class="empty-icon">🐾</div><p>Your cart is empty.<br>Add some products for your pet!</p></div>
+  </div>
+  <div class="cart-footer" id="cartFooter" style="display:none">
+    <div class="cart-total"><span>Total</span><span id="cartTotal">$0.00</span></div>
+    <button class="btn-checkout" onclick="checkout()" aria-label="Proceed to checkout">Checkout →</button>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav>
+  <button class="logo" onclick="navigate('home')" aria-label="Go to Home page">Nanak <span>Pet Store</span></button>
+  <ul class="nav-desktop">
+    <li><a href="#" class="nav-link active" data-page="home">Home</a></li>
+    <li><a href="#" class="nav-link" data-page="about">About</a></li>
+    <li><a href="#" class="nav-link" data-page="services">Services</a></li>
+    <li><a href="#" class="nav-link" data-page="testimonials">Testimonials</a></li>
+    <li><a href="#" class="nav-link" data-page="shop">Shop</a></li>
+    <li><a href="#" class="nav-link" data-page="contact">Contact</a></li>
+  </ul>
+  <button class="hamburger" id="hamburgerBtn" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobileNav">
+    <span></span><span></span><span></span>
+  </button>
+  <button class="nav-cart" onclick="toggleCart()" aria-label="View shopping cart" tabindex="0" role="button">🛒<div class="cart-count" id="cartCount" aria-live="polite" aria-label="Cart items">0</div></button>
+</nav>
+<nav class="mobile-nav" id="mobileNav" role="navigation" aria-label="Mobile navigation">
+  <a class="nav-link active" data-page="home" href="#" onclick="navigate('home');closeMobileNav()">Home</a>
+  <a class="nav-link" data-page="about" href="#" onclick="navigate('about');closeMobileNav()">About</a>
+  <a class="nav-link" data-page="services" href="#" onclick="navigate('services');closeMobileNav()">Services</a>
+  <a class="nav-link" data-page="testimonials" href="#" onclick="navigate('testimonials');closeMobileNav()">Testimonials</a>
+  <a class="nav-link" data-page="shop" href="#" onclick="navigate('shop');closeMobileNav()">Shop</a>
+  <a class="nav-link" data-page="contact" href="#" onclick="navigate('contact');closeMobileNav()">Contact</a>
+</nav>
+
+<!-- HOME -->
+<div id="home" class="page active" aria-label="Home page">
+  <div class="hero">
+    <div class="hero-text">
+      <div class="hero-tag">🐾 Your Pets Deserve the Best</div>
+      <h1>Where <em>Love</em><br>Meets Every<br>Pet's Need</h1>
+      <p>At Nanak Pet Store, we bring together premium pet care products, expert services, and genuine love for animals — all under one roof.</p>
+      <div class="btn-group">
+        <button class="btn btn-primary" onclick="navigate('shop')">Shop Now</button>
+        <button class="btn btn-outline" onclick="navigate('services')">Our Services</button>
+      </div>
+    </div>
+    <div class="hero-visual"><img src="dog.jpg" alt="Nanak Pet Store"></div>
+  </div>
+
+  <div class="home-stats">
+    <div class="stat"><div class="stat-num">2,500+</div><div class="stat-label">Happy Pet Owners</div></div>
+    <div class="stat"><div class="stat-num">500+</div><div class="stat-label">Products in Stock</div></div>
+    <div class="stat"><div class="stat-num">15 yrs</div><div class="stat-label">Trusted Experience</div></div>
+  </div>
+
+  <div class="home-features">
+    <div class="feature-card animate"><div class="feature-icon"><img class="image" src="vet products.png" alt="vet product"></div><h3>Vet-Approved Products</h3><p>Every item on our shelves is reviewed and approved by certified veterinarians for your pet's safety and wellbeing.</p></div>
+    <div class="feature-card animate" style="animation-delay:0.1s"><div class="feature-icon"> <img class="image" src="fast delivery.avif" alt="fast delivery"></div><h3>Fast Home Delivery</h3><p>Order online and get your pet supplies delivered to your doorstep within 24–48 hours, reliably and on time.</p></div>
+    <div class="feature-card animate" style="animation-delay:0.2s"><div class="feature-icon"> <img class="image" src="pet advice.webp" alt="Pet advice"></div><h3>Expert Pet Advice</h3><p>Our knowledgeable staff are always on hand to guide you on nutrition, health, and care for all kinds of pets.</p></div>
+  </div>
+
+  <footer>
+    <div class="footer-brand"><div class="logo">Nanak <span>Pet Store</span></div><p>Proudly serving pet families since 2009. Because every pet deserves love, care, and the best products available.</p></div>
+    <div class="footer-col"><h4>Quick Links</h4><ul>
+      <li><a onclick="navigate('home')">Home</a></li>
+      <li><a onclick="navigate('about')">About Us</a></li>
+      <li><a onclick="navigate('services')">Services</a></li>
+      <li><a onclick="navigate('shop')">Shop</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Services</h4><ul>
+      <li><a onclick="navigate('services')">Pet Grooming</a></li>
+      <li><a onclick="navigate('services')">Vet Consultations</a></li>
+      <li><a onclick="navigate('services')">Pet Boarding</a></li>
+      <li><a onclick="navigate('services')">Training</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul>
+      <li><a onclick="navigate('contact')">📍 Accra Abeka Junction</a></li>
+      <li><a href="tel:+233544847072">📞 +233 544847072</a></li>
+      <li><a href="/cdn-cgi/l/email-protection#a3cecac8c6c2d0c2d1c690939093e3c4cec2cacf8dc0ccce">✉️ <span class="__cf_email__" data-cfemail="187571737d796b796a7d2b282b28587f75797174367b7775">[email&#160;protected]</span></a></li>
+      <li><a>⏰ Mon–Sat: 9am – 7pm</a></li>
+    </ul></div>
+  </footer>
+  <div class="footer-bottom">© 2024 Nanak Pet Store. All rights reserved. Made with ❤️ for pets.</div>
+</div>
+
+<!-- ABOUT -->
+<div id="about" class="page">
+  <div style="padding: 6rem 8%;">
+    <div class="section-header">
+      <div class="section-tag">Our Story</div>
+      <h2>More Than a Store —<br>We're Family</h2>
+      <p>Founded in 2009, Nanak Pet Store was born out of a deep passion for animals and the belief that every pet deserves exceptional care.</p>
+    </div>
+    <div class="about-grid">
+      <div class="about-visual"><img src="bed.webp" alt="Our Store"></div>
+      <div class="about-content">
+        <h3>A Legacy Built on Love for Animals</h3>
+        <p>Nanak Pet Store was founded by Gurpreet Nanak, a lifelong animal lover who saw a gap in the market for a truly personal, community-driven pet shop. Starting with a small storefront and a big heart, the store has grown into one of the most trusted pet destinations in the city.</p>
+        <p>Over 15 years, we've welcomed thousands of families through our doors — helping first-time pet owners, supporting rescue animals, and celebrating milestones with the loyal pets we've all come to know by name.</p>
+        <p>We believe pets are not just animals — they're family. That philosophy drives every product we stock and every service we offer.</p>
+        <button class="btn btn-primary" onclick="navigate('contact')">Get in Touch</button>
+      </div>
+    </div>
+    <div class="values-grid">
+      <div class="value-card"><div class="value-icon"><img class="image" src="compassion.webp" alt="compassion"></div><h4>Compassion</h4><p>We care deeply about every animal that comes through our doors.</p></div>
+      <div class="value-card"><div class="value-icon"><img class="image" src="quality.png" alt="quality"></div><h4>Quality</h4><p>Only the best, vet-recommended products make our shelves.</p></div>
+      <div class="value-card"><div class="value-icon"><img class="image" src="community.jpg" alt="community"></div><h4>Community</h4><p>We support local shelters and host community pet events regularly.</p></div>
+      <div class="value-card"><div class="value-icon"><img class="image"src="sustainability.jpg" alt="sustainerbility"></div><h4>Sustainability</h4><p>We prioritize eco-friendly, ethically sourced pet products.</p></div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand"><div class="logo">Nanak <span>Pet Store</span></div><p>Proudly serving pet families since 2009.</p></div>
+    <div class="footer-col"><h4>Navigate</h4><ul>
+      <li><a onclick="navigate('home')">Home</a></li>
+      <li><a onclick="navigate('services')">Services</a></li>
+      <li><a onclick="navigate('shop')">Shop</a></li>
+      <li><a onclick="navigate('contact')">Contact</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Hours</h4><ul>
+      <li><a>Mon–Fri: 9am–7pm</a></li>
+      <li><a>Saturday: 9am–6pm</a></li>
+      <li><a>Sunday: 10am–4pm</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Follow Us</h4><ul>
+      <li><a href="https://www.instagram.com/michael_asaree?igsh=c2pzYnM0cWZnZ29y&utm_source=qr" target="_blank">Instagram</a></li>
+      <li><a href="https://www.facebook.com/share/1CAFoQMHkB/?mibextid=wwXIfr" target="_blank">Facebook</a></li>
+      <li><a href="https://www.youtube.com/@Nana-K-TV" target="_blank">Youtube</a></li>
+    </ul></div>
+  </footer>
+  <div class="footer-bottom">© 2024 Nanak Pet Store. All rights reserved.</div>
+</div>
+
+<!-- SERVICES -->
+<div id="services" class="page">
+  <div style="padding: 6rem 8%;">
+    <div class="section-header">
+      <div class="section-tag">What We Offer</div>
+      <h2>Complete Care for<br>Your Beloved Pets</h2>
+      <p>From grooming to boarding, our range of professional pet services ensures your furry friend is always happy, healthy, and well cared for.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card">
+        <img class="image" src="groom.jpg" alt="Pet Grooming">
+        <div class="service-info"><h3>Pet Grooming</h3><p>Full grooming sessions including bathing, drying, trimming, nail clipping, and ear cleaning by certified groomers.</p><div class="service-price">From $35</div><button class="btn-book" onclick="bookService('Pet Grooming', '$35')">Book Now →</button></div>
+      </div>
+      <div class="service-card">
+        <img class="image" src="vet consult.jpg" alt="Vet Consultations">
+        <div class="service-info"><h3>Vet Consultations</h3><p>In-store veterinary consultations for checkups, vaccinations, dietary advice, and health screenings.</p><div class="service-price">From $50</div><button class="btn-book" onclick="bookService('Vet Consultation', '$50')">Book Now →</button></div>
+      </div>
+      <div class="service-card">
+        <img class="image" src="boarding.jpg" alt="Pet Boarding">
+        <div class="service-info"><h3>Pet Boarding</h3><p>Safe, comfortable overnight stays for your pets while you're away, with 24/7 supervision and care.</p><div class="service-price">From $30/night</div><button class="btn-book" onclick="bookService('Pet Boarding', '$30/night')">Book Now →</button></div>
+      </div>
+      <div class="service-card">
+        <img class="image" src="pet training.jpg" alt="Pet Training">
+        <div class="service-info"><h3>Pet Training</h3><p>One-on-one and group training sessions for dogs of all ages — from basic obedience to advanced commands.</p><div class="service-price">From $60/session</div><button class="btn-book" onclick="bookService('Pet Training', '$60/session')">Book Now →</button></div>
+      </div>
+      <div class="service-card">
+        <img class="image" src="Pet-Vaccinations-1.webp" alt="Vaccination Clinic">
+        <div class="service-info"><h3>Vaccination Clinic</h3><p>Walk-in vaccination clinics every Saturday. Keep your pet protected with essential and optional vaccines.</p><div class="service-price">From $25</div><button class="btn-book" onclick="bookService('Vaccination Clinic', '$25')">Book Now →</button></div>
+      </div>
+      <div class="service-card">
+        <img class="image" src="pet food.webp" alt="Nutrition Consultation">
+        <div class="service-info"><h3>Nutrition Consultation</h3><p>Get a personalized diet plan tailored to your pet's breed, age, weight, and health conditions.</p><div class="service-price">Free with purchase</div><button class="btn-book" onclick="bookService('Nutrition Consultation', 'Free')">Book Now →</button></div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top: 3rem;">
+      <button class="btn btn-primary" onclick="navigate('contact')">Book a Service →</button>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand"><div class="logo">Nanak <span>Pet Store</span></div><p>Expert care for all your pets.</p></div>
+    <div class="footer-col"><h4>Navigate</h4><ul>
+      <li><a onclick="navigate('home')">Home</a></li>
+      <li><a onclick="navigate('about')">About</a></li>
+      <li><a onclick="navigate('shop')">Shop</a></li>
+      <li><a onclick="navigate('contact')">Contact</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Our Services</h4><ul>
+      <li><a onclick="bookService('Pet Grooming','$35')">Grooming</a></li>
+      <li><a onclick="bookService('Pet Boarding','$30/night')">Boarding</a></li>
+      <li><a onclick="bookService('Vet Consultation','$50')">Vet Consult</a></li>
+      <li><a onclick="bookService('Pet Training','$60/session')">Training</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul>
+      <li><a href="tel:+233544847072">📞 +233 544847072</a></li>
+      <li><a href="/cdn-cgi/l/email-protection#6f0206040a0e1c0e1d0a5c5f5c5f2f08020e0603410c0002">✉️ <span class="__cf_email__" data-cfemail="a5c8cccec0c4d6c4d7c096959695e5c2c8c4ccc98bc6cac8">[email&#160;protected]</span></a></li>
+    </ul></div>
+  </footer>
+  <div class="footer-bottom">© 2024 Nanak Pet Store. All rights reserved.</div>
+</div>
+
+<!-- TESTIMONIALS -->
+<div id="testimonials" class="page">
+  <div style="padding: 6rem 8%;">
+    <div class="section-header">
+      <div class="section-tag">Happy Customers</div>
+      <h2>What Pet Parents<br>Say About Us</h2>
+      <p>Don't take our word for it — hear from the thousands of satisfied pet owners who trust Nanak Pet Store.</p>
+    </div>
+    <div class="testimonials-grid">
+      <div class="featured-review">
+        <div>
+          <div class="stars">★★★★★</div>
+          <p>Nanak Pet Store completely transformed how I care for my two golden retrievers. The staff remembered my dogs' names from the very first visit, and their product recommendations have been spot-on every single time.</p>
+          <div class="reviewer" style="margin-top:1.5rem">
+            <div class="avatar"><img src="1.jpg" alt="Priya Sharma"></div>
+            <div class="reviewer-info"><strong>Priya Sharma</strong><span>Golden Retriever Mom · Customer since 2018</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>The grooming service is absolutely fantastic. My Shih Tzu comes out looking like royalty every single time. The groomers are gentle, patient, and clearly love what they do.</p>
+        <div class="reviewer"><div class="avatar"><img src="2.jpg" alt="Michael Chen"></div><div class="reviewer-info"><strong>Michael Chen</strong><span>Shih Tzu Owner</span></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>I was anxious about leaving my cat for boarding, but the staff sent me daily photo updates! She was so relaxed and happy. Will definitely use again and again.</p>
+        <div class="reviewer"><div class="avatar"><img src="3.jpg" alt="Sarah Okonkwo"></div><div class="reviewer-info"><strong>Sarah Okonkwo</strong><span>Cat Mom of 2</span></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>The vet consultation here saved my rabbit's life — not an exaggeration. The in-store vet caught something my regular vet had missed. Incredibly professional team.</p>
+        <div class="reviewer"><div class="avatar"><img src="4.jpg" alt="James Patel"></div><div class="reviewer-info"><strong>James Patel</strong><span>Rabbit Owner</span></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★☆</div>
+        <p>Wide selection of products, competitive prices, and knowledgeable staff. My dog used to be reactive on walks; after training here, she's a completely different pup!</p>
+        <div class="reviewer"><div class="avatar"><img src="5.jpg" alt="Fatima Al-Hassan"></div><div class="reviewer-info"><strong>Fatima Al-Hassan</strong><span>Dog Trainer Enthusiast</span></div></div>
+      </div>
+      <div class="testimonial-card">
+        <div class="stars">★★★★★</div>
+        <p>The nutrition consultation was a game changer. My senior dog lost 3 kilos and has so much more energy now. Incredible free service that goes beyond what I expected.</p>
+        <div class="reviewer"><div class="avatar"><img src="6.jpg" alt="Robert Mensah"></div><div class="reviewer-info"><strong>Robert Mensah</strong><span>Labrador Dad</span></div></div>
+      </div>
+    </div>
+    <div style="text-align:center; margin-top:3rem;">
+      <p style="color:#6B5040; margin-bottom:1rem;">Had a great experience? We'd love to hear from you!</p>
+      <button class="btn btn-primary" onclick="openReviewModal()">Leave a Review ✍️</button>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand"><div class="logo">Nanak <span>Pet Store</span></div><p>Trusted by thousands of pet families.</p></div>
+    <div class="footer-col"><h4>Navigate</h4><ul>
+      <li><a onclick="navigate('home')">Home</a></li>
+      <li><a onclick="navigate('about')">About</a></li>
+      <li><a onclick="navigate('services')">Services</a></li>
+      <li><a onclick="navigate('shop')">Shop</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Share</h4><ul>
+      <li><a onclick="openReviewModal()">Leave a Review</a></li>
+      <li><a href="https://www.instagram.com/michael_asaree?igsh=c2pzYnM0cWZnZ29y&utm_source=qr" target="_blank">Tag Us on Instagram</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Contact</h4><ul>
+      <li><a href="tel:+233544847072">📞 +233 544847072</a></li>
+      <li><a onclick="navigate('contact')">Contact Form</a></li>
+    </ul></div>
+  </footer>
+  <div class="footer-bottom">© 2024 Nanak Pet Store. All rights reserved.</div>
+</div>
+
+<!-- SHOP -->
+<div id="shop" class="page">
+  <div style="padding: 6rem 8%;">
+    <div class="section-header">
+      <div class="section-tag">Our Store</div>
+      <h2>Shop the Best for<br>Your Best Friend</h2>
+      <p>Browse our curated selection of premium food, toys, accessories, and health products for every type of pet.</p>
+    </div>
+    <div class="shop-filter">
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="dogs">🐕 Dogs</button>
+      <button class="filter-btn" data-filter="cats">🐈 Cats</button>
+      <button class="filter-btn" data-filter="birds">🐦 Birds</button>
+      <button class="filter-btn" data-filter="fish">🐟 Fish</button>
+      <button class="filter-btn" data-filter="small-pets">🐹 Small Pets</button>
+    </div>
+    <div class="products-grid" id="productsGrid">
+      <div class="product-card" data-category="dogs">
+        <div class="product-img"><img src="dental.webp" alt="Premium Dental Chews"></div>
+        <div class="product-info"><div class="product-category">Dogs</div><h4>Premium Dental Chews</h4><div class="product-bottom"><span class="product-price">$12.99</span><button class="add-btn" onclick="addToCart(this,'Premium Dental Chews',12.99,'dental.webp')">+</button></div></div>
+      </div>
+      <div class="product-card" data-category="dogs">
+        <div class="product-img"><img src="dog bed.jpg" alt="Orthopedic Dog Bed"></div>
+        <div class="product-info"><div class="product-category">Dogs</div><h4>Orthopedic Dog Bed</h4><div class="product-bottom"><span class="product-price">$64.99</span><button class="add-btn" onclick="addToCart(this,'Orthopedic Dog Bed',64.99,'dog bed.jpg')">+</button></div></div>
+      </div>
+      <div class="product-card" data-category="fish">
+        <div class="product-img"><img src="aquirium.jpg" alt="Aquarium Starter Kit"></div>
+        <div class="product-info"><div class="product-category">Fish</div><h4>Aquarium Starter Kit</h4><div class="product-bottom"><span class="product-price">$89.99</span><button class="add-btn" onclick="addToCart(this,'Aquarium Starter Kit',89.99,'aquirium.jpg')">+</button></div></div>
+      </div>
+      <div class="product-card" data-category="cats">
+        <div class="product-img"><img src="feather.jpg" alt="Interactive Feather Wand"></div>
+        <div class="product-info"><div class="product-category">Cats</div><h4>Interactive Feather Wand</h4><div class="product-bottom"><span class="product-price">$9.49</span><button class="add-btn" onclick="addToCart(this,'Interactive Feather Wand',9.49,'feather.jpg')">+</button></div></div>
+      </div>
+      <div class="product-card" data-category="small-pets">
+        <div class="product-img"><img src="timothy grass.webp" alt="Timothy Hay Bundle"></div>
+        <div class="product-info"><div class="product-category">Small Pets</div><h4>Timothy Hay Bundle</h4><div class="product-bottom"><span class="product-price">$14.99</span><button class="add-btn" onclick="addToCart(this,'Timothy Hay Bundle',14.99,'_timothy_grass_.avif')">+</button></div></div>
+      </div>
+      <div class="product-card" data-category="birds">
+        <div class="product-img"><img src="bird sticks.jpg" alt="Wooden Bird Perch Set"></div>
+        <div class="product-info"><div class="product-category">Birds</div><h4>Wooden Bird Perch Set</h4><div class="product-bottom"><span class="product-price">$19.99</span><button class="add-btn" onclick="addToCart(this,'Wooden Bird Perch Set',19.99,'bird sticks.jpg')">+</button></div></div>
+      </div>
+      <div class="product-card" data-category="dogs">
+        <div class="product-img"><img src="dry food.webp" alt="Grain-Free Dry Food 5kg"></div>
+        <div class="product-info"><div class="product-category">Dogs</div><h4>Grain-Free Dry Food 5kg</h4><div class="product-bottom"><span class="product-price">$44.99</span><button class="add-btn" onclick="addToCart(this,'Grain-Free Dry Food 5kg',44.99,'dry food.webp')">+</button></div></div>
+      </div>
+      <div class="product-card" data-category="cats">
+        <div class="product-img"><img src="cleaning box.jpg" alt="Self-Cleaning Litter Box"></div>
+        <div class="product-info"><div class="product-category">Cats</div><h4>Self-Cleaning Litter Box</h4><div class="product-bottom"><span class="product-price">$129.99</span><button class="add-btn" onclick="addToCart(this,'Self-Cleaning Litter Box',129.99,'cleaning box.jpg')">+</button></div></div>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand"><div class="logo">Nanak <span>Pet Store</span></div><p>500+ products for every pet.</p></div>
+    <div class="footer-col"><h4>Navigate</h4><ul>
+      <li><a onclick="navigate('home')">Home</a></li>
+      <li><a onclick="navigate('about')">About</a></li>
+      <li><a onclick="navigate('services')">Services</a></li>
+      <li><a onclick="navigate('contact')">Contact</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Categories</h4><ul>
+      <li><a onclick="filterProducts('dogs')">Dogs</a></li>
+      <li><a onclick="filterProducts('cats')">Cats</a></li>
+      <li><a onclick="filterProducts('birds')">Birds</a></li>
+      <li><a onclick="filterProducts('fish')">Fish & Aquatics</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Help</h4><ul>
+      <li><a onclick="showShippingInfo()">Shipping Info</a></li>
+      <li><a onclick="showReturnsPolicy()">Returns Policy</a></li>
+      <li><a onclick="navigate('contact')">Contact Us</a></li>
+    </ul></div>
+  </footer>
+  <div class="footer-bottom">© 2024 Nanak Pet Store. All rights reserved.</div>
+</div>
+
+<!-- CONTACT -->
+<div id="contact" class="page">
+  <div style="padding: 6rem 8%;">
+    <div class="section-header">
+      <div class="section-tag">Get in Touch</div>
+      <h2>We'd Love to<br>Hear From You</h2>
+      <p>Whether you have a question, want to book a service, or just want to say hello — our team is here for you.</p>
+    </div>
+    <div class="contact-grid">
+      <div class="contact-info">
+        <h3>Visit Us or Send a Message</h3>
+        <p>Our friendly team is available 6 days a week to help you and your pet. We respond to all messages within 24 hours.</p>
+        <div class="contact-detail"><div class="contact-icon">📍</div><div><strong>Store Address</strong><span>Accra Abeka Junction</span></div></div>
+        <div class="contact-detail"><div class="contact-icon">📞</div><div><strong>Phone Number</strong><span><a href="tel:+233544847072 / 0200622641" style="color:inherit;text-decoration:none;">+233 544847072 / 0200622641</a></span></div></div>
+        <div class="contact-detail"><div class="contact-icon">✉️</div><div><strong>Email Address</strong><span><a href="/cdn-cgi/l/email-protection#fe9397959b9f8d9f8c9bcdcecdcebe99939f9792d09d9193" style="color:inherit;text-decoration:none;"><span class="__cf_email__" data-cfemail="375a5e5c5256445645520407040777505a565e5b1954585a">[email&#160;protected]</span></a></span></div></div>
+        <div class="contact-detail"><div class="contact-icon">⏰</div><div><strong>Store Hours</strong><span>Mon–Sat: 9:00am – 7:00pm<br>Sunday: 10:00am – 4:00pm</span></div></div>
+      </div>
+      <div class="contact-form">
+        <h3 style="font-family:'Playfair Display',serif; color:var(--dark); margin-bottom:1.5rem; font-size:1.4rem;">Send Us a Message</h3>
+       <form id="contactForm" action="https://formspree.io/f/xzdakndb" method="POST" onsubmit="handleContactForm(event)">
+          <div class="form-row">
+            <div class="form-group">
+              <label for="firstName">First Name *</label>
+              <input type="text" id="firstName" name="firstName" placeholder="Jane" required>
+              <span class="field-error" id="firstNameError"></span>
+            </div>
+            <div class="form-group">
+              <label for="lastName">Last Name *</label>
+              <input type="text" id="lastName" name="lastName" placeholder="Smith" required>
+              <span class="field-error" id="lastNameError"></span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="emailField">Email Address *</label>
+            <input type="email" id="emailField" name="email" placeholder="jane@example.com" required>
+            <span class="field-error" id="emailError"></span>
+          </div>
+          <div>
+        <div class="chip-label">What type of pet do you have?</div>
+        <div class="chip-group" role="group" aria-label="Pet type">
+          <input type="radio" name="petType" id="dog"        value="Dog">
+          <label for="dog">🐕 Dog</label>
+
+          <input type="radio" name="petType" id="cat"        value="Cat">
+          <label for="cat">🐈 Cat</label>
+
+          <input type="radio" name="petType" id="bird"       value="Bird">
+          <label for="bird">🐦 Bird</label>
+
+          <input type="radio" name="petType" id="fish"       value="Fish">
+          <label for="fish">🐟 Fish</label>
+
+          <input type="radio" name="petType" id="small-pet"  value="Small Pet">
+          <label for="small-pet">🐹 Small Pet</label>
+
+          <input type="radio" name="petType" id="other-pet"  value="Other">
+          <label for="other-pet">🐾 Other</label>
+        </div>
+      </div>
+          <div class="form-group">
+            <label for="enquiry">What can we help with?</label>
+            <select id="enquiry" name="enquiryType">
+             <option value="" disabled selected>Select a topic…</option>
+            <option value="General Enquiry">💬 General Enquiry</option>
+            <option value="Book Grooming">✂️ Book Grooming</option>
+            <option value="Book Vet Consultation">🩺 Book Vet Consultation</option>
+            <option value="Book Boarding">🏠 Book Boarding</option>
+            <option value="Book Training">🎓 Book Training</option>
+            <option value="Product Question">🛍️ Product Question</option>
+            <option value="Order / Delivery">🚚 Order / Delivery</option>
+            <option value="Feedback">⭐ Feedback</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="message">Your Message *</label>
+            <textarea id="messageField" name="message" placeholder="Tell us how we can help you and your pet..." required></textarea>
+            <span class="field-error" id="messageError"></span>
+          </div>
+          <button type="submit" id="submitBtn" class="btn btn-primary" style="width:100%;" aria-label="Send contact message">Send Message →</button>
+        </form>
+      </div>
+    </div>
+  </div>
+  <footer>
+    <div class="footer-brand"><div class="logo">Nanak <span>Pet Store</span></div><p>Always here for you and your pets.</p></div>
+    <div class="footer-col"><h4>Navigate</h4><ul>
+      <li><a onclick="navigate('home')">Home</a></li>
+      <li><a onclick="navigate('about')">About</a></li>
+      <li><a onclick="navigate('services')">Services</a></li>
+      <li><a onclick="navigate('shop')">Shop</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Hours</h4><ul>
+      <li><a>Mon–Fri: 9am–7pm</a></li>
+      <li><a>Saturday: 9am–6pm</a></li>
+      <li><a>Sunday: 10am–4pm</a></li>
+    </ul></div>
+    <div class="footer-col"><h4>Social</h4><ul>
+      <li><a href="https://www.instagram.com/michael_asaree?igsh=c2pzYnM0cWZnZ29y&utm_source=qr" target="_blank">Instagram</a></li>
+      <li><a href="https://www.facebook.com/share/1CAFoQMHkB/?mibextid=wwXIfr" target="_blank">Facebook</a></li>
+      <li><a href="https://www.youtube.com/@Nana-K-TV" target="_blank">YouTube</a></li>
+    </ul></div>
+  </footer>
+  <div class="footer-bottom">© 2024 Nanak Pet Store. All rights reserved.</div>
+</div>
+
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+// NAVIGATION
+function navigate(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+  const page = document.getElementById(pageId);
+  if (page) page.classList.add('active');
+  const link = document.querySelector(`[data-page="${pageId}"]`);
+  if (link) link.classList.add('active');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+document.querySelectorAll('.nav-link').forEach(link => {
+  link.addEventListener('click', e => { e.preventDefault(); navigate(link.dataset.page); });
+});
+
+// MOBILE NAV
+const hamburgerBtn = document.getElementById('hamburgerBtn');
+const mobileNav = document.getElementById('mobileNav');
+function closeMobileNav() {
+  hamburgerBtn.classList.remove('open');
+  mobileNav.classList.remove('open');
+  hamburgerBtn.setAttribute('aria-expanded', 'false');
+}
+hamburgerBtn.addEventListener('click', () => {
+  const isOpen = mobileNav.classList.toggle('open');
+  hamburgerBtn.classList.toggle('open', isOpen);
+  hamburgerBtn.setAttribute('aria-expanded', String(isOpen));
+});
+// Also update navigate to close mobile nav
+const _origNavigate = navigate;
+navigate = function(pageId) {
+  _origNavigate(pageId);
+  closeMobileNav();
+  // Sync mobile nav active state
+  document.querySelectorAll('.mobile-nav .nav-link').forEach(l => {
+    l.classList.toggle('active', l.dataset.page === pageId);
+  });
+};
+
+// SHOP FILTER
+function filterProducts(category) {
+  navigate('shop');
+  setTimeout(() => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    const btn = document.querySelector(`[data-filter="${category}"]`);
+    if (btn) btn.classList.add('active');
+    applyFilter(category);
+  }, 100);
+}
+
+function applyFilter(filter) {
+  document.querySelectorAll('#productsGrid .product-card').forEach(card => {
+    card.style.display = (filter === 'all' || card.dataset.category === filter) ? '' : 'none';
+  });
+}
+
+document.querySelectorAll('.filter-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    applyFilter(btn.dataset.filter);
+  });
+});
+
+// CART
+let cart = [];
+
+function addToCart(btn, name, price, img) {
+  const existing = cart.find(i => i.name === name);
+  if (existing) { existing.qty++; } else { cart.push({ name, price, img, qty: 1, id: Date.now() }); }
+  btn.textContent = '✓'; btn.classList.add('added');
+  setTimeout(() => { btn.textContent = '+'; btn.classList.remove('added'); }, 1500);
+  updateCartUI();
+  showToast('🐾 ' + name + ' added to cart!', 'success');
+}
+
+function removeFromCart(id) { cart = cart.filter(i => i.id !== id); updateCartUI(); }
+
+function changeQty(id, delta) {
+  const item = cart.find(i => i.id === id);
+  if (!item) return;
+  item.qty += delta;
+  if (item.qty <= 0) { removeFromCart(id); return; }
+  updateCartUI();
+}
+
+function updateCartUI() {
+  const count = cart.reduce((s, i) => s + i.qty, 0);
+  const countEl = document.getElementById('cartCount');
+  countEl.textContent = count;
+  countEl.classList.toggle('visible', count > 0);
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  document.getElementById('cartTotal').textContent = '$' + total.toFixed(2);
+  const itemsEl = document.getElementById('cartItems');
+  const footerEl = document.getElementById('cartFooter');
+  if (cart.length === 0) {
+    itemsEl.innerHTML = '<div class="cart-empty"><div class="empty-icon">🐾</div><p>Your cart is empty.<br>Add some products for your pet!</p></div>';
+    footerEl.style.display = 'none';
+  } else {
+    footerEl.style.display = '';
+    itemsEl.innerHTML = cart.map(item => `
+      <div class="cart-item">
+        <div class="cart-item-img"><img src="${item.img}" alt="${item.name}" onerror="this.style.display='none'"></div>
+        <div class="cart-item-info"><h4>${item.name}</h4><span>$${(item.price * item.qty).toFixed(2)}</span></div>
+        <div class="cart-item-qty">
+          <button class="qty-btn" onclick="changeQty(${item.id},-1)" aria-label="Decrease quantity of ${item.name}">−</button>
+          <span class="qty-num">${item.qty}</span>
+          <button class="qty-btn" onclick="changeQty(${item.id},1)" aria-label="Increase quantity of ${item.name}">+</button>
+        </div>
+        <button class="cart-remove" onclick="removeFromCart(${item.id})" aria-label="Remove ${item.name} from cart">✕</button>
+      </div>`).join('');
+  }
+}
+
+function toggleCart() {
+  document.getElementById('cartOverlay').classList.toggle('open');
+  document.getElementById('cartSidebar').classList.toggle('open');
+}
+
+function checkout() {
+  if (!cart.length) return;
+  const total = cart.reduce((s, i) => s + i.price * i.qty, 0);
+  const itemsSummary = cart.map(i => `${i.name} x${i.qty} ($${(i.price * i.qty).toFixed(2)})`).join(', ');
+
+  const overlay = document.getElementById('modalOverlay');
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-icon">🛒</div>
+    <h3 style="font-family:'Playfair Display',serif;font-size:1.5rem;color:var(--dark);margin-bottom:0.5rem;">Complete Your Order</h3>
+    <p style="color:#7A6050;font-size:0.9rem;margin-bottom:1.5rem;">Total: <strong style="color:var(--accent)">$${total.toFixed(2)}</strong> — Fill in your details and we'll confirm delivery within 24–48 hrs.</p>
+    <form id="formspreeOrderForm" action="https://formspree.io/f/xzdakndb" method="POST" style="text-align:left;">
+      <input type="hidden" name="Order Items" value="${itemsSummary}">
+      <input type="hidden" name="Order Total" value="$${total.toFixed(2)}">
+      <input type="hidden" name="_subject" value="New Order from Nanak Pet Store">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-bottom:0.75rem;">
+        <div>
+          <label style="font-size:0.82rem;font-weight:500;color:var(--dark);display:block;margin-bottom:0.35rem;">First Name *</label>
+          <input type="text" name="First Name" required placeholder="Jane" style="width:100%;padding:0.7rem 0.9rem;border:1.5px solid #E0D4C4;border-radius:10px;font-family:'DM Sans',sans-serif;background:var(--cream);outline:none;font-size:0.9rem;">
+        </div>
+        <div>
+          <label style="font-size:0.82rem;font-weight:500;color:var(--dark);display:block;margin-bottom:0.35rem;">Last Name *</label>
+          <input type="text" name="Last Name" required placeholder="Doe" style="width:100%;padding:0.7rem 0.9rem;border:1.5px solid #E0D4C4;border-radius:10px;font-family:'DM Sans',sans-serif;background:var(--cream);outline:none;font-size:0.9rem;">
+        </div>
+      </div>
+      <div style="margin-bottom:0.75rem;">
+        <label style="font-size:0.82rem;font-weight:500;color:var(--dark);display:block;margin-bottom:0.35rem;">Email Address *</label>
+        <input type="email" name="email" required placeholder="jane@example.com" style="width:100%;padding:0.7rem 0.9rem;border:1.5px solid #E0D4C4;border-radius:10px;font-family:'DM Sans',sans-serif;background:var(--cream);outline:none;font-size:0.9rem;">
+      </div>
+      <div style="margin-bottom:0.75rem;">
+        <label style="font-size:0.82rem;font-weight:500;color:var(--dark);display:block;margin-bottom:0.35rem;">Phone Number *</label>
+        <input type="tel" name="Phone" required placeholder="+233 XX XXX XXXX" style="width:100%;padding:0.7rem 0.9rem;border:1.5px solid #E0D4C4;border-radius:10px;font-family:'DM Sans',sans-serif;background:var(--cream);outline:none;font-size:0.9rem;">
+      </div>
+      <div style="margin-bottom:0.75rem;">
+        <label style="font-size:0.82rem;font-weight:500;color:var(--dark);display:block;margin-bottom:0.35rem;">Delivery Address *</label>
+        <textarea name="Delivery Address" required placeholder="Street, neighbourhood, city..." rows="2" style="width:100%;padding:0.7rem 0.9rem;border:1.5px solid #E0D4C4;border-radius:10px;font-family:'DM Sans',sans-serif;background:var(--cream);outline:none;font-size:0.9rem;resize:none;"></textarea>
+      </div>
+      <div style="margin-bottom:1rem;">
+        <label style="font-size:0.82rem;font-weight:500;color:var(--dark);display:block;margin-bottom:0.35rem;">Additional Notes</label>
+        <input type="text" name="Notes" placeholder="e.g. call before delivery, gate code..." style="width:100%;padding:0.7rem 0.9rem;border:1.5px solid #E0D4C4;border-radius:10px;font-family:'DM Sans',sans-serif;background:var(--cream);outline:none;font-size:0.9rem;">
+      </div>
+      <div style="background:var(--warm);border-radius:10px;padding:0.75rem 1rem;margin-bottom:1.2rem;font-size:0.85rem;color:#5A4030;">
+        🛍️ <strong>Your order:</strong> ${itemsSummary}
+      </div>
+      <div style="display:flex;gap:0.75rem;">
+        <button type="submit" id="formspreeSubmitBtn" style="flex:1;padding:0.85rem;background:var(--brown);color:white;border:none;border-radius:50px;font-size:0.95rem;font-family:'DM Sans',sans-serif;font-weight:500;cursor:pointer;transition:all 0.25s;">Place Order →</button>
+        <button type="button" onclick="closeModal()" style="padding:0.85rem 1.5rem;background:var(--warm);color:var(--dark);border:none;border-radius:50px;font-size:0.95rem;font-family:'DM Sans',sans-serif;cursor:pointer;">Cancel</button>
+      </div>
+    </form>`;
+  overlay.classList.add('open');
+
+  document.getElementById('formspreeOrderForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('formspreeSubmitBtn');
+    btn.textContent = 'Placing Order...';
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    const formData = new FormData(this);
+    try {
+      const res = await fetch(this.action, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } });
+      if (res.ok) {
+        closeModal();
+        cart = []; updateCartUI(); toggleCart();
+        showModal('🎉', 'Order Placed!', 'Thank you! Your order of $' + total.toFixed(2) + ' has been received. Our team will contact you to confirm delivery within 24–48 hours.');
+      } else {
+        btn.textContent = 'Place Order →'; btn.disabled = false; btn.style.opacity = '';
+        showToast('⚠️ Submission failed. Please try again or call us directly.', 'info');
+      }
+    } catch(err) {
+      btn.textContent = 'Place Order →'; btn.disabled = false; btn.style.opacity = '';
+      showToast('⚠️ Network error. Please check your connection.', 'info');
+    }
+  });
+}
+
+// BOOKING
+function bookService(name, price) {
+  const overlay = document.getElementById('modalOverlay');
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-icon">📅</div>
+    <h3 id="modalTitle">Book ${name}</h3>
+    <p>Ready to book a ${name} starting <strong>${price}</strong>? We'll confirm your appointment within 24 hours.</p>
+    <div style="display:flex;gap:0.75rem;justify-content:center;flex-wrap:wrap;">
+      <button class="modal-close" onclick="closeModal(); navigate('contact')" aria-label="Go to contact form to book">Book via Contact Form →</button>
+      <button class="modal-close" onclick="closeModal()" style="background:var(--warm);color:var(--dark);" aria-label="Close booking dialog">Cancel</button>
+    </div>`;
+  overlay.classList.add('open');
+}
+
+// CONTACT FORM
+function handleContactForm(e) {
+  e.preventDefault();
+  let valid = true;
+  [['firstName','firstNameError','Please enter your first name.'],
+   ['lastName','lastNameError','Please enter your last name.'],
+   ['messageField','messageError','Please enter a message.']].forEach(([id, errId, msg]) => {
+    const el = document.getElementById(id), err = document.getElementById(errId);
+    if (!el.value.trim()) { el.classList.add('error'); err.textContent = msg; valid = false; }
+    else { el.classList.remove('error'); err.textContent = ''; }
+  });
+  const email = document.getElementById('emailField'), emailErr = document.getElementById('emailError');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+    email.classList.add('error'); emailErr.textContent = 'Please enter a valid email address.'; valid = false;
+  } else { email.classList.remove('error'); emailErr.textContent = ''; }
+  if (!valid) return;
+  const btn = document.getElementById('submitBtn');
+  const savedEmail = email.value;
+  btn.textContent = 'Sending...'; btn.disabled = true; btn.style.opacity = '0.7';
+  const form = document.getElementById('contactForm');
+  const formData = new FormData(form);
+  fetch(form.action, { method: 'POST', body: formData, headers: { 'Accept': 'application/json' } })
+    .then(res => {
+      btn.textContent = 'Send Message →'; btn.disabled = false; btn.style.opacity = '';
+      if (res.ok) {
+        form.reset();
+        showModal('✅', 'Message Sent!', 'Thank you! We\'ve received your message and will reply within 24 hours to ' + savedEmail + '.');
+      } else {
+        showToast('⚠️ Failed to send. Please try again or call us.', 'info');
+      }
+    })
+    .catch(() => {
+      btn.textContent = 'Send Message →'; btn.disabled = false; btn.style.opacity = '';
+      showToast('⚠️ Network error. Please check your connection.', 'info');
+    });
+}
+
+// REVIEW MODAL
+function openReviewModal() {
+  const overlay = document.getElementById('modalOverlay');
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-icon">⭐</div>
+    <h3>Leave a Review</h3>
+    <p>Share your experience with Nanak Pet Store!</p>
+    <div class="star-rating" id="starRating" data-rating="0">
+      <span onclick="setRating(1)" onmouseenter="hoverRating(1)" onmouseleave="resetStarHover()" role="radio" aria-label="1 star" tabindex="0">★</span>
+      <span onclick="setRating(2)" onmouseenter="hoverRating(2)" onmouseleave="resetStarHover()" role="radio" aria-label="2 stars" tabindex="0">★</span>
+      <span onclick="setRating(3)" onmouseenter="hoverRating(3)" onmouseleave="resetStarHover()" role="radio" aria-label="3 stars" tabindex="0">★</span>
+      <span onclick="setRating(4)" onmouseenter="hoverRating(4)" onmouseleave="resetStarHover()" role="radio" aria-label="4 stars" tabindex="0">★</span>
+      <span onclick="setRating(5)" onmouseenter="hoverRating(5)" onmouseleave="resetStarHover()" role="radio" aria-label="5 stars" tabindex="0">★</span>
+    </div>
+    <div class="form-group" style="text-align:left;margin-bottom:1rem;">
+      <label style="font-size:0.85rem;font-weight:500;color:var(--dark);margin-bottom:0.5rem;display:block;">Your Name</label>
+      <input id="reviewName" type="text" placeholder="Your name" style="width:100%;padding:0.75rem 1rem;border:1.5px solid #E0D4C4;border-radius:12px;font-family:'DM Sans',sans-serif;background:var(--cream);outline:none;">
+    </div>
+    <div class="form-group" style="text-align:left;margin-bottom:1.2rem;">
+      <label style="font-size:0.85rem;font-weight:500;color:var(--dark);margin-bottom:0.5rem;display:block;">Your Review</label>
+      <textarea id="reviewText" placeholder="Tell us about your experience..." style="width:100%;height:90px;padding:0.75rem 1rem;border:1.5px solid #E0D4C4;border-radius:12px;font-family:'DM Sans',sans-serif;background:var(--cream);resize:vertical;outline:none;"></textarea>
+    </div>
+    <div style="display:flex;gap:0.75rem;justify-content:center;">
+      <button class="modal-close" onclick="submitReview()">Submit Review</button>
+      <button class="modal-close" onclick="closeModal()" style="background:var(--warm);color:var(--dark);">Cancel</button>
+    </div>`;
+  overlay.classList.add('open');
+}
+
+function setRating(rating) {
+  const stars = document.querySelectorAll('#starRating span');
+  stars.forEach((s, i) => {
+    s.classList.toggle('active', i < rating);
+    s.setAttribute('aria-label', `Rate ${i + 1} star${i > 0 ? 's' : ''}`);
+  });
+  document.getElementById('starRating').dataset.rating = rating;
+}
+
+function hoverRating(rating) {
+  const stars = document.querySelectorAll('#starRating span');
+  stars.forEach((s, i) => s.style.color = i < rating ? 'var(--gold)' : '');
+}
+
+function resetStarHover() {
+  const current = parseInt(document.getElementById('starRating')?.dataset.rating || 0);
+  const stars = document.querySelectorAll('#starRating span');
+  stars.forEach((s, i) => s.style.color = i < current ? 'var(--gold)' : '');
+}
+
+function submitReview() {
+  const name = document.getElementById('reviewName').value.trim();
+  const text = document.getElementById('reviewText').value.trim();
+  const rating = parseInt(document.getElementById('starRating').dataset.rating || 0);
+  if (!name || !text || !rating) { showToast('Please fill in all fields and select a star rating.', 'info'); return; }
+  closeModal();
+  showToast('🌟 Thank you ' + name + '! Your review has been submitted.', 'success');
+}
+
+// SHIPPING & RETURNS
+function showShippingInfo() {
+  showModal('🚚', 'Shipping Information', 'We deliver within Accra in 24–48 hours. Orders over $50 get FREE delivery. Standard fee is $5. Same-day delivery available for orders placed before 12pm.');
+}
+function showReturnsPolicy() {
+  showModal('↩️', 'Returns Policy', 'We accept returns within 14 days of purchase for unused items in original packaging. Food and opened health products cannot be returned. Email mikeasare3030@gmail.com to start a return.');
+}
+
+// TOAST
+function showToast(msg, type) {
+  const toast = document.createElement('div');
+  toast.className = 'toast ' + (type || 'info');
+  toast.textContent = msg;
+  document.getElementById('toastContainer').appendChild(toast);
+  setTimeout(() => { toast.style.animation = 'toastOut 0.35s ease forwards'; setTimeout(() => toast.remove(), 350); }, 3000);
+}
+
+// CLOSE MODAL
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function handleModalOverlayClick(e) {
+  if (e.target === e.currentTarget) closeModal();
+}
+
+// Close modal on Escape key
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    const overlay = document.getElementById('modalOverlay');
+    if (overlay.classList.contains('open')) closeModal();
+    const cartSidebar = document.getElementById('cartSidebar');
+    if (cartSidebar.classList.contains('open')) toggleCart();
+  }
+});
+
+// MODAL
+function showModal(icon, title, text) {
+  document.getElementById('modalContent').innerHTML = `
+    <div class="modal-icon">${icon}</div>
+    <h3 id="modalTitle">${title}</h3>
+    <p>${text}</p>
+    <button class="modal-close" onclick="closeModal()" aria-label="Close dialog">Got It</button>`;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+</script>
+</body>
+</html>
