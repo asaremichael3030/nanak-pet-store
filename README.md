@@ -1,3 +1,4 @@
+# NanaK Pet Store
 Nanak Pet Store is a modern, responsive pet shop website built using HTML, CSS, and JavaScript.
 It provides a smooth shopping experience for pet lovers with a clean UI, product browsing, and cart functionality.
 This project demonstrates strong frontend development skills, including layout design, interactivity, and responsive web design.
